@@ -1,0 +1,4 @@
+ansible-playbook update.yml --ask-become-pass
+ansible-playbook microk8s.yml --ask-become-pass
+ansible-playbook sudoers.yml --ask-become-pass
+ansible-playbook reboot.yml --ask-become-pass
