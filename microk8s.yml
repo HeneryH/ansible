@@ -1,0 +1,42 @@
+---
+- hosts: servers
+  become: true
+  become_user: root
+  tasks:
+    - name: Install microk8s
+      snap:
+        name:
+          - microk8s
+        classic: yes
+      become: true
+    - name: Change ownership recursively
+      file:
+        path: /home/kube/.kube
+        state: directory
+        recurse: yes
+        owner: kube
+        group: microk8s
+    - name: adding existing user 'kube' to group sudo
+      user:
+        name: 'kube'
+        groups: microk8s
+        append: yes
+    - name: create if not already alias file
+      copy:
+        content: ""
+        dest: /home/kube/.bash_aliases
+        force: false
+        group: kube
+        owner: kube
+        mode: 0644
+    - name: add kubectl alias file
+      lineinfile: 
+        dest=/home/kube/.bash_aliases 
+        regexp="alias kubectl='microk8s kubectl'"  
+        line="alias kubectl='microk8s kubectl'"
+    - name: Install Helm
+      snap:
+        name:
+          - helm
+        classic: yes
+      become: true

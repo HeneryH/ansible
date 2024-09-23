@@ -1,0 +1,11 @@
+---
+- hosts: servers
+  become: true
+  become_user: root
+  tasks:
+    - lineinfile:
+        path: /etc/sudoers
+        state: present
+        insertafter: '^%sudo'
+        line: 'kube ALL=(ALL) NOPASSWD: ALL'
+        validate: 'visudo -cf %s'
